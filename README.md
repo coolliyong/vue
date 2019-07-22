@@ -130,8 +130,22 @@ export function initMixin(Vue: Class<Component>) {
     }
 
     if (vm.$options.el) {
+      // 挂载方法
       vm.$mount(vm.$options.el)
     }
   }
 }
 ```
+
+## 4. new Vue
+
+首先传入一个 对象 `{ el: '#app', router, store, template: '<App/>', components: { App } }`
+
+### VUE 根实例
+
+![VUE根实例](./imgs/vue_instance.jpg)
+
+### VUE Compoent 实例
+
+隐式原型指向 VUE 实例
+![VUE根实例](./imgs/vue_instance.jpg)
