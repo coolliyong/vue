@@ -149,3 +149,252 @@ export function initMixin(Vue: Class<Component>) {
 
 隐式原型指向 VUE 实例
 ![VUE根实例](./imgs/vue_instance.jpg)
+
+...
+初步目标
+
+## 响应式数据
+
+1. `Dep` 发布订阅
+
+```js
+export default class Dep {
+  static target: ?Watcher
+  id: number
+  subs: Array<Watcher>
+
+  constructor() {
+    this.id = uid++
+    this.subs = []
+  }
+
+  addSub(sub: Watcher) {
+    this.subs.push(sub)
+  }
+
+  removeSub(sub: Watcher) {
+    remove(this.subs, sub)
+  }
+
+  depend() {
+    if (Dep.target) {
+      Dep.target.addDep(this)
+    }
+  }
+
+  notify() {
+    // stabilize the subscriber list first
+    const subs = this.subs.slice()
+    if (process.env.NODE_ENV !== 'production' && !config.async) {
+      // subs aren't sorted in scheduler if not running async
+      // we need to sort them now to make sure they fire in correct
+      // order
+      subs.sort((a, b) => a.id - b.id)
+    }
+    for (let i = 0, l = subs.length; i < l; i++) {
+      subs[i].update()
+    }
+  }
+}
+```
+
+2. `def` 定义数据 / 冻结数据
+
+```js
+/**
+ * Define a property.
+ */
+export function def(obj: Object, key: string, val: any, enumerable?: boolean) {
+  Object.defineProperty(obj, key, {
+    value: val, // 值
+    enumerable: !!enumerable, // 是否枚举
+    writable: true, // 可写,默认是false
+    configurable: true, //  属性描述符能够被改变，同时该属性也能从对应的对象上被删除。默认为 false。
+  })
+}
+```
+
+3. `Observer` 类
+
+```js
+/**
+ * 附加到每个被观察对象的观察者类
+ * 对象。一旦附加，观察者将转换目标
+ * 对象的属性键转换为getter/setter
+ * 收集依赖项并分派更新。
+ */
+export class Observer {
+  value: any
+  dep: Dep
+  vmCount: number // 将此对象作为根$data的vm数量
+
+  constructor(value: any) {
+    this.value = value
+    this.dep = new Dep()
+    this.vmCount = 0
+    // object.defineproperty(value,'__ob__',this)
+    def(value, '__ob__', this)
+    if (Array.isArray(value)) {
+      // 数组处理
+      if (hasProto) {
+        // '__proto__' in {}
+        // value.__proto__ = arrayMethods 修改隐士原型
+        protoAugment(value, arrayMethods)
+      } else {
+        // def(value, arrayMethods, ...arrayKeys) // 给数据keys 统一加一个订阅
+        copyAugment(value, arrayMethods, arrayKeys)
+      }
+      // observe(items[i])
+      this.observeArray(value)
+    } else {
+      // 对象的处理
+      this.walk(value)
+      // const keys = Object.keys(value)
+      // defineReactive(obj, ...keys)
+    }
+  }
+
+  /**
+   * Walk through all properties and convert them into
+   * getter/setters. This method should only be called when
+   * value type is Object.
+   */
+  walk(obj: Object) {
+    const keys = Object.keys(obj)
+    for (let i = 0; i < keys.length; i++) {
+      defineReactive(obj, keys[i])
+    }
+  }
+
+  /**
+   * Observe a list of Array items.
+   */
+  observeArray(items: Array<any>) {
+    for (let i = 0, l = items.length; i < l; i++) {
+      observe(items[i])
+    }
+  }
+}
+```
+
+
+4. `ovserve` 创建一个观察者实例
+
+```js
+
+
+/**
+ * 尝试为值创建一个观察者实例，
+ * 如果成功观察到，返回新的观察者，
+ * 或现有的观察者，如果值已经有一个。
+ * value 观察者源 是否根节点  返回 ovserver 或 void
+ */
+export function observe (value: any, asRootData: ?boolean): Observer | void {
+  // 如果不是对象或者 源 是 vnode 则直接返回
+  if (!isObject(value) || value instanceof VNode) return
+  let ob: Observer | void
+  // 如果存在于响应式 对象 则直接赋值
+  if (hasOwn(value, '__ob__') && value.__ob__ instanceof Observer) {
+    ob = value.__ob__
+  } else if (
+    // 需要更新 && 非服务端渲染 
+    // 数组 或者 浅层对象
+    // 对象是否是可拓展
+    shouldObserve && !isServerRendering() &&
+    (Array.isArray(value) || isPlainObject(value)) &&
+    Object.isExtensible(value) &&
+    !value._isVue
+  ) {
+    ob = new Observer(value)
+  }
+  if (asRootData && ob) {
+    ob.vmCount++
+  }
+  return ob
+}
+```
+
+
+5. `defineReactive` 在对象上定义响应性属性
+```js
+/**
+ * Define a reactive property on an Object.
+ * 在对象上定义反应性属性。
+ * // obj key  value 自定义设置函数 是否浅层对象
+ */
+export function defineReactive (
+  obj: Object,
+  key: string,
+  val: any,
+  customSetter?: ?Function,
+  shallow?: boolean
+) {
+  const dep = new Dep()
+  /***
+   * Object.getOwnPropertyDescriptor() 
+   * 返回对象上一个自有属性对应的属性描述符。
+   *（自有属性指的是直接赋予该对象的属性，不需要从原型链上进行查找的属性）
+   */
+  const property = Object.getOwnPropertyDescriptor(obj, key)
+  if (property && property.configurable === false) {
+    return
+    // 如果不能被改变，直接 void
+  }
+
+  // cater for pre-defined getter/setters
+  // 满足预定义的getter/setter
+  const getter = property && property.get
+  const setter = property && property.set
+  // 如果没有给val 返回 原 val
+  if ((!getter || setter) && arguments.length === 2) {
+    val = obj[key]
+  }
+
+  // 是否是 非浅层 且直接 创建一个响应式 对象
+  let childOb = !shallow && observe(val)
+  Object.defineProperty(obj, key, {
+    enumerable: true,
+    configurable: true,
+    get: function reactiveGetter () {
+      const value = getter ? getter.call(obj) : val
+      if (Dep.target) {
+        // 如果有 watch 触发watch 
+        dep.depend()
+        if (childOb) { // 如果是深层级，给 深层级的对象也触发 发布
+          childOb.dep.depend()
+          if (Array.isArray(value)) {
+            // 数组递归触发 发布
+            dependArray(value)
+          }
+        }
+      }
+      return value
+    },
+    set: function reactiveSetter (newVal) {
+      // 原值
+      const value = getter ? getter.call(obj) : val
+      /* eslint-disable no-self-compare */
+      // 值不变 不做变更
+      if (newVal === value || (newVal !== newVal && value !== value)) {
+        return
+      }
+      /* eslint-enable no-self-compare */
+      if (process.env.NODE_ENV !== 'production' && customSetter) {
+        customSetter()
+      }
+      // #7981: for accessor properties without setter
+      if (getter && !setter) return
+      if (setter) {
+        setter.call(obj, newVal)
+      } else {
+        val = newVal
+      }
+      // 如果是深层级 ，再做一下响应式处理，如果有原响应对象，则 VMCount ++ 
+      childOb = !shallow && observe(newVal)
+      dep.notify() // 给订阅者 发布
+    }
+  })
+}
+```
+
+## VDOM
