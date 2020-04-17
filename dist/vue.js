@@ -1,6 +1,6 @@
 /*!
  * Vue.js v2.6.11
- * (c) 2014-2019 Evan You
+ * (c) 2014-2020 Evan You
  * Released under the MIT License.
  */
 (function (global, factory) {
@@ -932,6 +932,7 @@
       }
       this.observeArray(value);
     } else {
+      // 非数组直接观测
       this.walk(value);
     }
   };
@@ -1021,6 +1022,7 @@
     var dep = new Dep();
 
     var property = Object.getOwnPropertyDescriptor(obj, key);
+    // 确保是可以枚举的属性
     if (property && property.configurable === false) {
       return
     }
@@ -1039,6 +1041,7 @@
       get: function reactiveGetter () {
         var value = getter ? getter.call(obj) : val;
         if (Dep.target) {
+          // 收集依赖
           dep.depend();
           if (childOb) {
             childOb.dep.depend();
@@ -1066,7 +1069,9 @@
         } else {
           val = newVal;
         }
+        // 如果非扁平化对象则 深度递归
         childOb = !shallow && observe(newVal);
+        //通知更新
         dep.notify();
       }
     });

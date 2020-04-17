@@ -232,7 +232,8 @@ function genConfig (name) {
       if (!/Circular/.test(msg)) {
         warn(msg)
       }
-    }
+    },
+    sourceMap: true,
   }
 
   // built-in vars
