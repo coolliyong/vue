@@ -1,6 +1,6 @@
 /* @flow */
 
-import Dep from './dep'
+import Dep, {pushTarget} from './dep'
 import VNode from '../vdom/vnode'
 import { arrayMethods } from './array'
 import {
@@ -37,6 +37,7 @@ export function toggleObserving (value: boolean) {
 export class Observer {
   value: any;
   dep: Dep;
+  // 将此对象作为根$data的vm的数量
   vmCount: number; // number of vms that have this object as root $data
 
   constructor (value: any) {
@@ -62,6 +63,7 @@ export class Observer {
    * value type is Object.
    */
   walk (obj: Object) {
+    // 遍历 建立响应式数据
     const keys = Object.keys(obj)
     for (let i = 0; i < keys.length; i++) {
       defineReactive(obj, keys[i])
@@ -153,12 +155,14 @@ export function defineReactive (
     val = obj[key]
   }
 
+  // 如果当前key 是一个 引用类型 深度优先建立一个响应式数据 且返回回来
   let childOb = !shallow && observe(val)
   Object.defineProperty(obj, key, {
     enumerable: true,
     configurable: true,
     get: function reactiveGetter () {
       const value = getter ? getter.call(obj) : val
+      // 依赖收集 dep.target 对应 init 里  getData() 的 pushTarget() // 生成一个target
       if (Dep.target) {
         dep.depend()
         if (childOb) {

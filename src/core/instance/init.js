@@ -13,11 +13,11 @@ import { extend, mergeOptions, formatComponentName } from '../util/index'
 let uid = 0
 
 export function initMixin (Vue: Class<Component>) {
+  // 提供给new Vue 时候的 初始化方法
   Vue.prototype._init = function (options?: Object) {
     const vm: Component = this
-    // a uid
+    // 自增一个组件id
     vm._uid = uid++
-
     let startTag, endTag
     /* istanbul ignore if */
     if (process.env.NODE_ENV !== 'production' && config.performance && mark) {
@@ -25,7 +25,6 @@ export function initMixin (Vue: Class<Component>) {
       endTag = `vue-perf-end:${vm._uid}`
       mark(startTag)
     }
-
     // a flag to avoid this being observed
     vm._isVue = true
     // merge options
@@ -35,6 +34,7 @@ export function initMixin (Vue: Class<Component>) {
       // internal component options needs special treatment.
       initInternalComponent(vm, options)
     } else {
+      // 非Vue 组件
       vm.$options = mergeOptions(
         resolveConstructorOptions(vm.constructor),
         options || {},
@@ -49,15 +49,21 @@ export function initMixin (Vue: Class<Component>) {
     }
     // expose real self
     vm._self = vm
+    // 初始化生命周期
     initLifecycle(vm)
+    // 初始化处理事件  on off omce emit
     initEvents(vm)
+    // 初始化渲染
     initRender(vm)
     callHook(vm, 'beforeCreate')
+    // 初始化注入 （完成注入 before data/props）
     initInjections(vm) // resolve injections before data/props
+    // 初始化 data 数据
     initState(vm)
+    // 完成 提供data/props
     initProvide(vm) // resolve provide after data/props
+    // 调用 created 生命周期
     callHook(vm, 'created')
-
     /* istanbul ignore if */
     if (process.env.NODE_ENV !== 'production' && config.performance && mark) {
       vm._name = formatComponentName(vm, false)

@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+<div id="app">
+  <h2>{{message}}</h2>
+</div>
+
+<script src="../dist/vue.js"></script>
+<script>
+    const compon = Vue.extends({
+
+    });
+
+    const vm = new Vue({
+        el: '#app',
+        data: {
+            message: 'master',
+        },
+        created() {
+            console.log(1);
+            setTimeout(() => {
+                this.message = '5000 timeout';
+            }, 2000)
+        }
+    })
+</script>
+</body>
+</html>

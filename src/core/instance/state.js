@@ -46,10 +46,14 @@ export function proxy (target: Object, sourceKey: string, key: string) {
 }
 
 export function initState (vm: Component) {
+  // vm 组件
   vm._watchers = []
   const opts = vm.$options
+  // 初始化props
   if (opts.props) initProps(vm, opts.props)
+  // 初始化方法
   if (opts.methods) initMethods(vm, opts.methods)
+  // 初始化数据
   if (opts.data) {
     initData(vm)
   } else {
@@ -127,6 +131,7 @@ function initData (vm: Component) {
   const props = vm.$options.props
   const methods = vm.$options.methods
   let i = keys.length
+  // 通过遍历吧所有的key 挂载到 this._data[key] 上
   while (i--) {
     const key = keys[i]
     if (process.env.NODE_ENV !== 'production') {
@@ -148,18 +153,21 @@ function initData (vm: Component) {
     }
   }
   // observe data
+  // 建立响应式数据
   observe(data, true /* asRootData */)
 }
 
 export function getData (data: Function, vm: Component): any {
   // #7573 disable dep collection when invoking data getters
-  pushTarget()
+  pushTarget() // 类似于生成一个订阅的key
   try {
+    // 通过call 组件 执行data方法，得到返回值
     return data.call(vm, vm)
   } catch (e) {
     handleError(e, vm, `data()`)
     return {}
   } finally {
+    // 弹出 订阅key
     popTarget()
   }
 }
