@@ -45,17 +45,24 @@ export class Observer {
     this.dep = new Dep()
     this.vmCount = 0
     // object.defineproperty(value,'__ob__',this)
-    def(value, '__ob__', this)
+
+
+    // value = target
+    // this: Observer Instance
+    def(value, '__ob__', this);
+    // eslint-disable-next-line
+    debugger;
     if (Array.isArray(value)) {
+      debugger;
       // 数组处理
       if (hasProto) { // '__proto__' in {}
-        // value.__proto__ = arrayMethods 修改隐士原型
+        // 修改数组原型
         protoAugment(value, arrayMethods)
       } else {
         // def(value, arrayMethods, ...arrayKeys) // 给数据keys 统一加一个订阅
         copyAugment(value, arrayMethods, arrayKeys)
       }
-      // observe(items[i])
+      // observe() 数组的每一项
       this.observeArray(value)
     } else {
       // 对象的处理
@@ -127,9 +134,10 @@ export function observe (value: any, asRootData: ?boolean): Observer | void {
   if (hasOwn(value, '__ob__') && value.__ob__ instanceof Observer) {
     ob = value.__ob__
   } else if (
-    // 需要更新 && 非服务端渲染 
-    // 数组 或者 浅层对象
+    // 需要更新 && 非服务端渲染
+    // 数组 或者 普通对象
     // 对象是否是可拓展
+    // 非Vue 对象
     shouldObserve && !isServerRendering() &&
     (Array.isArray(value) || isPlainObject(value)) &&
     Object.isExtensible(value) &&
@@ -157,7 +165,7 @@ export function defineReactive (
 ) {
   const dep = new Dep()
   /***
-   * Object.getOwnPropertyDescriptor() 
+   * Object.getOwnPropertyDescriptor()
    * 返回对象上一个自有属性对应的属性描述符。
    *（自有属性指的是直接赋予该对象的属性，不需要从原型链上进行查找的属性）
    */
@@ -184,7 +192,7 @@ export function defineReactive (
     get: function reactiveGetter () {
       const value = getter ? getter.call(obj) : val
       if (Dep.target) {
-        // 如果有 watch 触发watch 
+        // 如果有 watch 触发watch
         dep.depend()
         if (childOb) { // 如果是深层级，给 深层级的对象也触发 发布
           childOb.dep.depend()
@@ -215,7 +223,7 @@ export function defineReactive (
       } else {
         val = newVal
       }
-      // 如果是深层级 ，再做一下响应式处理，如果有原响应对象，则 VMCount ++ 
+      // 如果是深层级 ，再做一下响应式处理，如果有原响应对象，则 VMCount ++
       childOb = !shallow && observe(newVal)
       dep.notify() // 给订阅者 发布
     }
