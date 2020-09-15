@@ -1,13 +1,24 @@
 /*!
+<<<<<<< HEAD
  * Vue.js v2.6.10
+=======
+ * Vue.js v2.6.11
+>>>>>>> f96178f2e6c353f7d36ba53477dd823d7a0f517d
  * (c) 2014-2020 Evan You
  * Released under the MIT License.
  */
 (function (global, factory) {
+<<<<<<< HEAD
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
   typeof define === 'function' && define.amd ? define(factory) :
   (global = global || self, global.Vue = factory());
 }(this, (function () { 'use strict';
+=======
+  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('lodash')) :
+  typeof define === 'function' && define.amd ? define(['lodash'], factory) :
+  (global = global || self, global.Vue = factory(global.lodash));
+}(this, (function (lodash) { 'use strict';
+>>>>>>> f96178f2e6c353f7d36ba53477dd823d7a0f517d
 
   /*  */
 
@@ -907,6 +918,7 @@
   /**
    * In some cases we may want to disable observation inside a component's
    * update computation.
+   * 在某些情况下，我们可能想在组件的更新计算中禁用观察。
    */
   var shouldObserve = true;
 
@@ -2009,7 +2021,7 @@
     isUsingMicroTask = true;
   } else if (typeof setImmediate !== 'undefined' && isNative(setImmediate)) {
     // Fallback to setImmediate.
-    // Techinically it leverages the (macro) task queue,
+    // Technically it leverages the (macro) task queue,
     // but it is still a better choice than setTimeout.
     timerFunc = function () {
       setImmediate(flushCallbacks);
@@ -2079,6 +2091,30 @@
       'require' // for Webpack/Browserify
     );
 
+<<<<<<< HEAD
+=======
+    var warnNonPresent = function (target, key) {
+      warn(
+        "Property or method \"" + key + "\" is not defined on the instance but " +
+        'referenced during render. Make sure that this property is reactive, ' +
+        'either in the data option, or for class-based components, by ' +
+        'initializing the property. ' +
+        'See: https://vuejs.org/v2/guide/reactivity.html#Declaring-Reactive-Properties.',
+        target
+      );
+    };
+
+    var warnReservedPrefix = function (target, key) {
+      warn(
+        "Property \"" + key + "\" must be accessed with \"$data." + key + "\" because " +
+        'properties starting with "$" or "_" are not proxied in the Vue instance to ' +
+        'prevent conflicts with Vue internals. ' +
+        'See: https://vuejs.org/v2/api/#data',
+        target
+      );
+    };
+
+>>>>>>> f96178f2e6c353f7d36ba53477dd823d7a0f517d
     var hasProxy =
       typeof Proxy !== 'undefined' && isNative(Proxy);
 
@@ -4676,14 +4712,43 @@
     data = vm._data = typeof data === 'function'
       ? getData(data, vm)
       : data || {};
+<<<<<<< HEAD
 
+=======
+    if (!isPlainObject(data)) {
+      data = {};
+       warn(
+        'data functions should return an object:\n' +
+        'https://vuejs.org/v2/guide/components.html#data-Must-Be-a-Function',
+        vm
+      );
+    }
+>>>>>>> f96178f2e6c353f7d36ba53477dd823d7a0f517d
     // proxy data on instance
     var keys = Object.keys(data);
     var i = keys.length;
     while (i--) {
       var key = keys[i];
+<<<<<<< HEAD
        if (!isReserved(key)) {
         // this._data  = 响应式数据
+=======
+      {
+        if (methods && hasOwn(methods, key)) {
+          warn(
+            ("Method \"" + key + "\" has already been defined as a data property."),
+            vm
+          );
+        }
+      }
+      if (props && hasOwn(props, key)) {
+         warn(
+          "The data property \"" + key + "\" is already declared as a prop. " +
+          "Use prop default value instead.",
+          vm
+        );
+      } else if (!isReserved(key)) {
+>>>>>>> f96178f2e6c353f7d36ba53477dd823d7a0f517d
         proxy(vm, "_data", key);
       }
     }
@@ -4708,8 +4773,13 @@
 
   function initComputed (vm, computed) {
     // $flow-disable-line
+    // 初始化computed 的watchers
     var watchers = vm._computedWatchers = Object.create(null);
+<<<<<<< HEAD
     // computed properties are just getters during SSR
+=======
+
+>>>>>>> f96178f2e6c353f7d36ba53477dd823d7a0f517d
 
     for (var key in computed) {
       var userDef = computed[key];
@@ -4728,12 +4798,6 @@
       // at instantiation here.
       if (!(key in vm)) {
         defineComputed(vm, key, userDef);
-      } else {
-        if (key in vm.$data) {
-          warn(("The computed property \"" + key + "\" is already defined in data."), vm);
-        } else if (vm.$options.props && key in vm.$options.props) {
-          warn(("The computed property \"" + key + "\" is already defined as a prop."), vm);
-        }
       }
     }
   }
@@ -4743,13 +4807,19 @@
     key,
     userDef
   ) {
+    // 非服务端渲染的时候是 true
     var shouldCache = !isServerRendering();
     if (typeof userDef === 'function') {
-      sharedPropertyDefinition.get = shouldCache
-        ? createComputedGetter(key)
-        : createGetterInvoker(userDef);
+      sharedPropertyDefinition.get = createComputedGetter(key);
       sharedPropertyDefinition.set = noop;
     } else {
+      // {
+      //   get(){
+      //     return this.hello;
+      //   },
+      //   set(){
+      //   }
+      // }
       sharedPropertyDefinition.get = userDef.get
         ? shouldCache && userDef.cache !== false
           ? createComputedGetter(key)
@@ -4757,6 +4827,7 @@
         : noop;
       sharedPropertyDefinition.set = userDef.set || noop;
     }
+<<<<<<< HEAD
     if (
         sharedPropertyDefinition.set === noop) {
       sharedPropertyDefinition.set = function () {
@@ -4766,6 +4837,8 @@
         );
       };
     }
+=======
+>>>>>>> f96178f2e6c353f7d36ba53477dd823d7a0f517d
     Object.defineProperty(target, key, sharedPropertyDefinition);
   }
 
@@ -4909,6 +4982,15 @@
       vm._uid = uid$2++;
 
       var startTag, endTag;
+<<<<<<< HEAD
+=======
+      /* istanbul ignore if */
+      if ( config.performance && mark) {
+        startTag = "vue-perf-start:" + (vm._uid);
+        endTag = "vue-perf-end:" + (vm._uid);
+        mark(startTag);
+      }
+>>>>>>> f96178f2e6c353f7d36ba53477dd823d7a0f517d
 
       // a flag to avoid this being observed
       vm._isVue = true;
@@ -4928,7 +5010,9 @@
       vm._renderProxy = vm;
       // expose real self
       vm._self = vm;
+      // 记录出一堆状态
       initLifecycle(vm);
+      // 初始化生命周期
       initEvents(vm);
       initRender(vm);
       callHook(vm, 'beforeCreate');
@@ -5007,6 +5091,14 @@
   }
 
   function Vue (options) {
+<<<<<<< HEAD
+=======
+    if (
+      !(this instanceof Vue)
+    ) {
+      warn('Vue is a constructor and should be called with the `new` keyword');
+    }
+>>>>>>> f96178f2e6c353f7d36ba53477dd823d7a0f517d
     this._init(options);
   }
 
@@ -5375,7 +5467,7 @@
     value: FunctionalRenderContext
   });
 
-  Vue.version = '2.6.10';
+  Vue.version = '2.6.11';
 
   /*  */
 
@@ -10101,7 +10193,7 @@
             if (el.parent && !maybeComponent(el.parent)) {
               warn$2(
                 "<template v-slot> can only appear at the root level inside " +
-                "the receiving the component",
+                "the receiving component",
                 el
               );
             }
@@ -11459,9 +11551,9 @@
   }
 
   function checkEvent (exp, text, warn, range) {
-    var stipped = exp.replace(stripStringRE, '');
-    var keywordMatch = stipped.match(unaryOperatorsRE);
-    if (keywordMatch && stipped.charAt(keywordMatch.index - 1) !== '$') {
+    var stripped = exp.replace(stripStringRE, '');
+    var keywordMatch = stripped.match(unaryOperatorsRE);
+    if (keywordMatch && stripped.charAt(keywordMatch.index - 1) !== '$') {
       warn(
         "avoid using JavaScript unary operator as property name: " +
         "\"" + (keywordMatch[0]) + "\" in expression " + (text.trim()),

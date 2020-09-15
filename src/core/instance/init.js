@@ -38,7 +38,9 @@ export function initMixin (Vue: Class<Component>) {
     vm._renderProxy = vm
     // expose real self
     vm._self = vm
+    // 记录出一堆状态
     initLifecycle(vm)
+    // 初始化生命周期
     initEvents(vm)
     initRender(vm)
     callHook(vm, 'beforeCreate')

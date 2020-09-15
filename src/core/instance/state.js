@@ -27,6 +27,7 @@ import {
   isServerRendering,
   isReservedAttribute
 } from '../util/index'
+import { get } from 'lodash'
 
 const sharedPropertyDefinition = {
   enumerable: true,
@@ -147,6 +148,7 @@ const computedWatcherOptions = { lazy: true }
 
 function initComputed (vm: Component, computed: Object) {
   // $flow-disable-line
+  // 初始化computed 的watchers
   const watchers = vm._computedWatchers = Object.create(null)
   // computed properties are just getters during SSR
 
@@ -167,12 +169,6 @@ function initComputed (vm: Component, computed: Object) {
     // at instantiation here.
     if (!(key in vm)) {
       defineComputed(vm, key, userDef)
-    } else if (process.env.NODE_ENV !== 'production') {
-      if (key in vm.$data) {
-        warn(`The computed property "${key}" is already defined in data.`, vm)
-      } else if (vm.$options.props && key in vm.$options.props) {
-        warn(`The computed property "${key}" is already defined as a prop.`, vm)
-      }
     }
   }
 }
@@ -182,28 +178,25 @@ export function defineComputed (
   key: string,
   userDef: Object | Function
 ) {
+  // 非服务端渲染的时候是 true
   const shouldCache = !isServerRendering()
   if (typeof userDef === 'function') {
-    sharedPropertyDefinition.get = shouldCache
-      ? createComputedGetter(key)
-      : createGetterInvoker(userDef)
+    sharedPropertyDefinition.get = createComputedGetter(key)
     sharedPropertyDefinition.set = noop
   } else {
+    // {
+    //   get(){
+    //     return this.hello;
+    //   },
+    //   set(){
+    //   }
+    // }
     sharedPropertyDefinition.get = userDef.get
       ? shouldCache && userDef.cache !== false
         ? createComputedGetter(key)
         : createGetterInvoker(userDef.get)
       : noop
     sharedPropertyDefinition.set = userDef.set || noop
-  }
-  if (process.env.NODE_ENV !== 'production' &&
-      sharedPropertyDefinition.set === noop) {
-    sharedPropertyDefinition.set = function () {
-      warn(
-        `Computed property "${key}" was assigned to but it has no setter.`,
-        this
-      )
-    }
   }
   Object.defineProperty(target, key, sharedPropertyDefinition)
 }
