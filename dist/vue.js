@@ -1,24 +1,13 @@
 /*!
-<<<<<<< HEAD
- * Vue.js v2.6.10
-=======
  * Vue.js v2.6.11
->>>>>>> f96178f2e6c353f7d36ba53477dd823d7a0f517d
  * (c) 2014-2020 Evan You
  * Released under the MIT License.
  */
 (function (global, factory) {
-<<<<<<< HEAD
-  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-  typeof define === 'function' && define.amd ? define(factory) :
-  (global = global || self, global.Vue = factory());
-}(this, (function () { 'use strict';
-=======
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('lodash')) :
   typeof define === 'function' && define.amd ? define(['lodash'], factory) :
   (global = global || self, global.Vue = factory(global.lodash));
 }(this, (function (lodash) { 'use strict';
->>>>>>> f96178f2e6c353f7d36ba53477dd823d7a0f517d
 
   /*  */
 
@@ -2091,8 +2080,6 @@
       'require' // for Webpack/Browserify
     );
 
-<<<<<<< HEAD
-=======
     var warnNonPresent = function (target, key) {
       warn(
         "Property or method \"" + key + "\" is not defined on the instance but " +
@@ -2114,7 +2101,6 @@
       );
     };
 
->>>>>>> f96178f2e6c353f7d36ba53477dd823d7a0f517d
     var hasProxy =
       typeof Proxy !== 'undefined' && isNative(Proxy);
 
@@ -3732,7 +3718,7 @@
               if (isUndef(factory.resolved)) {
                 reject(
                    ("timeout (" + (res.timeout) + "ms)")
-                    
+
                 );
               }
             }, res.timeout);
@@ -4712,9 +4698,6 @@
     data = vm._data = typeof data === 'function'
       ? getData(data, vm)
       : data || {};
-<<<<<<< HEAD
-
-=======
     if (!isPlainObject(data)) {
       data = {};
        warn(
@@ -4723,16 +4706,11 @@
         vm
       );
     }
->>>>>>> f96178f2e6c353f7d36ba53477dd823d7a0f517d
     // proxy data on instance
     var keys = Object.keys(data);
     var i = keys.length;
     while (i--) {
       var key = keys[i];
-<<<<<<< HEAD
-       if (!isReserved(key)) {
-        // this._data  = 响应式数据
-=======
       {
         if (methods && hasOwn(methods, key)) {
           warn(
@@ -4748,7 +4726,6 @@
           vm
         );
       } else if (!isReserved(key)) {
->>>>>>> f96178f2e6c353f7d36ba53477dd823d7a0f517d
         proxy(vm, "_data", key);
       }
     }
@@ -4775,11 +4752,6 @@
     // $flow-disable-line
     // 初始化computed 的watchers
     var watchers = vm._computedWatchers = Object.create(null);
-<<<<<<< HEAD
-    // computed properties are just getters during SSR
-=======
-
->>>>>>> f96178f2e6c353f7d36ba53477dd823d7a0f517d
 
     for (var key in computed) {
       var userDef = computed[key];
@@ -4827,18 +4799,6 @@
         : noop;
       sharedPropertyDefinition.set = userDef.set || noop;
     }
-<<<<<<< HEAD
-    if (
-        sharedPropertyDefinition.set === noop) {
-      sharedPropertyDefinition.set = function () {
-        warn(
-          ("Computed property \"" + key + "\" was assigned to but it has no setter."),
-          this
-        );
-      };
-    }
-=======
->>>>>>> f96178f2e6c353f7d36ba53477dd823d7a0f517d
     Object.defineProperty(target, key, sharedPropertyDefinition);
   }
 
@@ -4982,15 +4942,12 @@
       vm._uid = uid$2++;
 
       var startTag, endTag;
-<<<<<<< HEAD
-=======
       /* istanbul ignore if */
       if ( config.performance && mark) {
         startTag = "vue-perf-start:" + (vm._uid);
         endTag = "vue-perf-end:" + (vm._uid);
         mark(startTag);
       }
->>>>>>> f96178f2e6c353f7d36ba53477dd823d7a0f517d
 
       // a flag to avoid this being observed
       vm._isVue = true;
@@ -5091,14 +5048,11 @@
   }
 
   function Vue (options) {
-<<<<<<< HEAD
-=======
     if (
       !(this instanceof Vue)
     ) {
       warn('Vue is a constructor and should be called with the `new` keyword');
     }
->>>>>>> f96178f2e6c353f7d36ba53477dd823d7a0f517d
     this._init(options);
   }
 
@@ -10321,7 +10275,7 @@
             name = name.slice(1, -1);
           }
           if (
-            
+
             value.trim().length === 0
           ) {
             warn$2(
@@ -10456,7 +10410,7 @@
     var map = {};
     for (var i = 0, l = attrs.length; i < l; i++) {
       if (
-        
+
         map[attrs[i].name] && !isIE && !isEdge
       ) {
         warn$2('duplicate attribute: ' + attrs[i].name, attrs[i]);
