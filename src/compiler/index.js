@@ -16,6 +16,7 @@ export const createCompiler = createCompilerCreator(function baseCompile (
   if (options.optimize !== false) {
     optimize(ast, options)
   }
+  // 生成AST语法树
   const code = generate(ast, options)
   return {
     ast,

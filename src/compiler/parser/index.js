@@ -75,13 +75,14 @@ export function createASTElement (
 
 /**
  * Convert HTML string to AST.
+ * 转换  HTML 字符串 为 AST
  */
 export function parse (
   template: string,
   options: CompilerOptions
 ): ASTElement | void {
   warn = options.warn || baseWarn
-
+  //  no = (...args) => false;
   platformIsPreTag = options.isPreTag || no
   platformMustUseProp = options.mustUseProp || no
   platformGetTagNamespace = options.getTagNamespace || no
@@ -208,6 +209,7 @@ export function parse (
     canBeLeftOpenTag: options.canBeLeftOpenTag,
     shouldDecodeNewlines: options.shouldDecodeNewlines,
     shouldDecodeNewlinesForHref: options.shouldDecodeNewlinesForHref,
+    // 是否需要 keep - alive 组件
     shouldKeepComment: options.comments,
     outputSourceRange: options.outputSourceRange,
     start (tag, attrs, unary, start, end) {
@@ -224,29 +226,6 @@ export function parse (
       let element: ASTElement = createASTElement(tag, attrs, currentParent)
       if (ns) {
         element.ns = ns
-      }
-
-      if (process.env.NODE_ENV !== 'production') {
-        if (options.outputSourceRange) {
-          element.start = start
-          element.end = end
-          element.rawAttrsMap = element.attrsList.reduce((cumulated, attr) => {
-            cumulated[attr.name] = attr
-            return cumulated
-          }, {})
-        }
-        attrs.forEach(attr => {
-          if (invalidAttributeRE.test(attr.name)) {
-            warn(
-              `Invalid dynamic argument expression: attribute names cannot contain ` +
-              `spaces, quotes, <, >, / or =.`,
-              {
-                start: attr.start + attr.name.indexOf(`[`),
-                end: attr.start + attr.name.length
-              }
-            )
-          }
-        })
       }
 
       if (isForbiddenTag(element) && !isServerRendering()) {

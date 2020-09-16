@@ -52,9 +52,9 @@ export class Observer {
     // this: Observer Instance
     def(value, '__ob__', this);
     // eslint-disable-next-line
-    debugger;
+    // debugger;
     if (Array.isArray(value)) {
-      debugger;
+      // debugger;
       // 数组处理
       if (hasProto) { // '__proto__' in {}
         // 修改数组原型

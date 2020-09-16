@@ -933,9 +933,9 @@
     // this: Observer Instance
     def(value, '__ob__', this);
     // eslint-disable-next-line
-    debugger;
+    // debugger;
     if (Array.isArray(value)) {
-      debugger;
+      // debugger;
       // 数组处理
       if (hasProto) { // '__proto__' in {}
         // 修改数组原型
@@ -2079,27 +2079,6 @@
       'Math,Number,Date,Array,Object,Boolean,String,RegExp,Map,Set,JSON,Intl,' +
       'require' // for Webpack/Browserify
     );
-
-    var warnNonPresent = function (target, key) {
-      warn(
-        "Property or method \"" + key + "\" is not defined on the instance but " +
-        'referenced during render. Make sure that this property is reactive, ' +
-        'either in the data option, or for class-based components, by ' +
-        'initializing the property. ' +
-        'See: https://vuejs.org/v2/guide/reactivity.html#Declaring-Reactive-Properties.',
-        target
-      );
-    };
-
-    var warnReservedPrefix = function (target, key) {
-      warn(
-        "Property \"" + key + "\" must be accessed with \"$data." + key + "\" because " +
-        'properties starting with "$" or "_" are not proxied in the Vue instance to ' +
-        'prevent conflicts with Vue internals. ' +
-        'See: https://vuejs.org/v2/api/#data',
-        target
-      );
-    };
 
     var hasProxy =
       typeof Proxy !== 'undefined' && isNative(Proxy);
@@ -3718,7 +3697,7 @@
               if (isUndef(factory.resolved)) {
                 reject(
                    ("timeout (" + (res.timeout) + "ms)")
-
+                    
                 );
               }
             }, res.timeout);
@@ -4698,34 +4677,14 @@
     data = vm._data = typeof data === 'function'
       ? getData(data, vm)
       : data || {};
-    if (!isPlainObject(data)) {
-      data = {};
-       warn(
-        'data functions should return an object:\n' +
-        'https://vuejs.org/v2/guide/components.html#data-Must-Be-a-Function',
-        vm
-      );
-    }
+
     // proxy data on instance
     var keys = Object.keys(data);
     var i = keys.length;
     while (i--) {
       var key = keys[i];
-      {
-        if (methods && hasOwn(methods, key)) {
-          warn(
-            ("Method \"" + key + "\" has already been defined as a data property."),
-            vm
-          );
-        }
-      }
-      if (props && hasOwn(props, key)) {
-         warn(
-          "The data property \"" + key + "\" is already declared as a prop. " +
-          "Use prop default value instead.",
-          vm
-        );
-      } else if (!isReserved(key)) {
+       if (!isReserved(key)) {
+        // this._data  = 响应式数据
         proxy(vm, "_data", key);
       }
     }
@@ -4752,6 +4711,7 @@
     // $flow-disable-line
     // 初始化computed 的watchers
     var watchers = vm._computedWatchers = Object.create(null);
+    // computed properties are just getters during SSR
 
     for (var key in computed) {
       var userDef = computed[key];
@@ -4942,12 +4902,6 @@
       vm._uid = uid$2++;
 
       var startTag, endTag;
-      /* istanbul ignore if */
-      if ( config.performance && mark) {
-        startTag = "vue-perf-start:" + (vm._uid);
-        endTag = "vue-perf-end:" + (vm._uid);
-        mark(startTag);
-      }
 
       // a flag to avoid this being observed
       vm._isVue = true;
@@ -5048,11 +5002,6 @@
   }
 
   function Vue (options) {
-    if (
-      !(this instanceof Vue)
-    ) {
-      warn('Vue is a constructor and should be called with the `new` keyword');
-    }
     this._init(options);
   }
 
@@ -9230,6 +9179,7 @@
 
   // Regular Expressions for parsing tags and attributes
   var attribute = /^\s*([^\s"'<>\/=]+)(?:\s*(=)\s*(?:"([^"]*)"+|'([^']*)'+|([^\s"'=<>`]+)))?/;
+  // 空格 *
   var dynamicArgAttribute = /^\s*((?:v-[\w-]+:|@|:|#)\[[^=]+\][^\s"'<>\/=]*)(?:\s*(=)\s*(?:"([^"]*)"+|'([^']*)'+|([^\s"'=<>`]+)))?/;
   var ncname = "[a-zA-Z_][\\-\\.0-9_a-zA-Z" + (unicodeRegExp.source) + "]*";
   var qnameCapture = "((?:" + ncname + "\\:)?" + ncname + ")";
@@ -9538,8 +9488,6 @@
   var lineBreakRE = /[\r\n]/;
   var whitespaceRE$1 = /\s+/g;
 
-  var invalidAttributeRE = /[\s"'<>\/=]/;
-
   var decodeHTMLCached = cached(he.decode);
 
   var emptySlotScopeToken = "_empty_";
@@ -9573,13 +9521,14 @@
 
   /**
    * Convert HTML string to AST.
+   * 转换  HTML 字符串 为 AST
    */
   function parse (
     template,
     options
   ) {
     warn$2 = options.warn || baseWarn;
-
+    //  no = (...args) => false;
     platformIsPreTag = options.isPreTag || no;
     platformMustUseProp = options.mustUseProp || no;
     platformGetTagNamespace = options.getTagNamespace || no;
@@ -9706,6 +9655,7 @@
       canBeLeftOpenTag: options.canBeLeftOpenTag,
       shouldDecodeNewlines: options.shouldDecodeNewlines,
       shouldDecodeNewlinesForHref: options.shouldDecodeNewlinesForHref,
+      // 是否需要 keep - alive 组件
       shouldKeepComment: options.comments,
       outputSourceRange: options.outputSourceRange,
       start: function start (tag, attrs, unary, start$1, end) {
@@ -9722,29 +9672,6 @@
         var element = createASTElement(tag, attrs, currentParent);
         if (ns) {
           element.ns = ns;
-        }
-
-        {
-          if (options.outputSourceRange) {
-            element.start = start$1;
-            element.end = end;
-            element.rawAttrsMap = element.attrsList.reduce(function (cumulated, attr) {
-              cumulated[attr.name] = attr;
-              return cumulated
-            }, {});
-          }
-          attrs.forEach(function (attr) {
-            if (invalidAttributeRE.test(attr.name)) {
-              warn$2(
-                "Invalid dynamic argument expression: attribute names cannot contain " +
-                "spaces, quotes, <, >, / or =.",
-                {
-                  start: attr.start + attr.name.indexOf("["),
-                  end: attr.start + attr.name.length
-                }
-              );
-            }
-          });
         }
 
         if (isForbiddenTag(element) && !isServerRendering()) {
@@ -10275,7 +10202,7 @@
             name = name.slice(1, -1);
           }
           if (
-
+            
             value.trim().length === 0
           ) {
             warn$2(
@@ -10410,7 +10337,7 @@
     var map = {};
     for (var i = 0, l = attrs.length; i < l; i++) {
       if (
-
+        
         map[attrs[i].name] && !isIE && !isEdge
       ) {
         warn$2('duplicate attribute: ' + attrs[i].name, attrs[i]);
@@ -11460,175 +11387,6 @@
     'extends,finally,continue,debugger,function,arguments'
   ).split(',').join('\\b|\\b') + '\\b');
 
-  // these unary operators should not be used as property/method names
-  var unaryOperatorsRE = new RegExp('\\b' + (
-    'delete,typeof,void'
-  ).split(',').join('\\s*\\([^\\)]*\\)|\\b') + '\\s*\\([^\\)]*\\)');
-
-  // strip strings in expressions
-  var stripStringRE = /'(?:[^'\\]|\\.)*'|"(?:[^"\\]|\\.)*"|`(?:[^`\\]|\\.)*\$\{|\}(?:[^`\\]|\\.)*`|`(?:[^`\\]|\\.)*`/g;
-
-  // detect problematic expressions in a template
-  function detectErrors (ast, warn) {
-    if (ast) {
-      checkNode(ast, warn);
-    }
-  }
-
-  function checkNode (node, warn) {
-    if (node.type === 1) {
-      for (var name in node.attrsMap) {
-        if (dirRE.test(name)) {
-          var value = node.attrsMap[name];
-          if (value) {
-            var range = node.rawAttrsMap[name];
-            if (name === 'v-for') {
-              checkFor(node, ("v-for=\"" + value + "\""), warn, range);
-            } else if (name === 'v-slot' || name[0] === '#') {
-              checkFunctionParameterExpression(value, (name + "=\"" + value + "\""), warn, range);
-            } else if (onRE.test(name)) {
-              checkEvent(value, (name + "=\"" + value + "\""), warn, range);
-            } else {
-              checkExpression(value, (name + "=\"" + value + "\""), warn, range);
-            }
-          }
-        }
-      }
-      if (node.children) {
-        for (var i = 0; i < node.children.length; i++) {
-          checkNode(node.children[i], warn);
-        }
-      }
-    } else if (node.type === 2) {
-      checkExpression(node.expression, node.text, warn, node);
-    }
-  }
-
-  function checkEvent (exp, text, warn, range) {
-    var stripped = exp.replace(stripStringRE, '');
-    var keywordMatch = stripped.match(unaryOperatorsRE);
-    if (keywordMatch && stripped.charAt(keywordMatch.index - 1) !== '$') {
-      warn(
-        "avoid using JavaScript unary operator as property name: " +
-        "\"" + (keywordMatch[0]) + "\" in expression " + (text.trim()),
-        range
-      );
-    }
-    checkExpression(exp, text, warn, range);
-  }
-
-  function checkFor (node, text, warn, range) {
-    checkExpression(node.for || '', text, warn, range);
-    checkIdentifier(node.alias, 'v-for alias', text, warn, range);
-    checkIdentifier(node.iterator1, 'v-for iterator', text, warn, range);
-    checkIdentifier(node.iterator2, 'v-for iterator', text, warn, range);
-  }
-
-  function checkIdentifier (
-    ident,
-    type,
-    text,
-    warn,
-    range
-  ) {
-    if (typeof ident === 'string') {
-      try {
-        new Function(("var " + ident + "=_"));
-      } catch (e) {
-        warn(("invalid " + type + " \"" + ident + "\" in expression: " + (text.trim())), range);
-      }
-    }
-  }
-
-  function checkExpression (exp, text, warn, range) {
-    try {
-      new Function(("return " + exp));
-    } catch (e) {
-      var keywordMatch = exp.replace(stripStringRE, '').match(prohibitedKeywordRE);
-      if (keywordMatch) {
-        warn(
-          "avoid using JavaScript keyword as property name: " +
-          "\"" + (keywordMatch[0]) + "\"\n  Raw expression: " + (text.trim()),
-          range
-        );
-      } else {
-        warn(
-          "invalid expression: " + (e.message) + " in\n\n" +
-          "    " + exp + "\n\n" +
-          "  Raw expression: " + (text.trim()) + "\n",
-          range
-        );
-      }
-    }
-  }
-
-  function checkFunctionParameterExpression (exp, text, warn, range) {
-    try {
-      new Function(exp, '');
-    } catch (e) {
-      warn(
-        "invalid function parameter expression: " + (e.message) + " in\n\n" +
-        "    " + exp + "\n\n" +
-        "  Raw expression: " + (text.trim()) + "\n",
-        range
-      );
-    }
-  }
-
-  /*  */
-
-  var range = 2;
-
-  function generateCodeFrame (
-    source,
-    start,
-    end
-  ) {
-    if ( start === void 0 ) start = 0;
-    if ( end === void 0 ) end = source.length;
-
-    var lines = source.split(/\r?\n/);
-    var count = 0;
-    var res = [];
-    for (var i = 0; i < lines.length; i++) {
-      count += lines[i].length + 1;
-      if (count >= start) {
-        for (var j = i - range; j <= i + range || end > count; j++) {
-          if (j < 0 || j >= lines.length) { continue }
-          res.push(("" + (j + 1) + (repeat$1(" ", 3 - String(j + 1).length)) + "|  " + (lines[j])));
-          var lineLength = lines[j].length;
-          if (j === i) {
-            // push underline
-            var pad = start - (count - lineLength) + 1;
-            var length = end > count ? lineLength - pad : end - start;
-            res.push("   |  " + repeat$1(" ", pad) + repeat$1("^", length));
-          } else if (j > i) {
-            if (end > count) {
-              var length$1 = Math.min(end - count, lineLength);
-              res.push("   |  " + repeat$1("^", length$1));
-            }
-            count += lineLength + 1;
-          }
-        }
-        break
-      }
-    }
-    return res.join('\n')
-  }
-
-  function repeat$1 (str, n) {
-    var result = '';
-    if (n > 0) {
-      while (true) { // eslint-disable-line
-        if (n & 1) { result += str; }
-        n >>>= 1;
-        if (n <= 0) { break }
-        str += str;
-      }
-    }
-    return result
-  }
-
   /*  */
 
 
@@ -11654,62 +11412,14 @@
       var warn$1 = options.warn || warn;
       delete options.warn;
 
-      /* istanbul ignore if */
-      {
-        // detect possible CSP restriction
-        try {
-          new Function('return 1');
-        } catch (e) {
-          if (e.toString().match(/unsafe-eval|CSP/)) {
-            warn$1(
-              'It seems you are using the standalone build of Vue.js in an ' +
-              'environment with Content Security Policy that prohibits unsafe-eval. ' +
-              'The template compiler cannot work in this environment. Consider ' +
-              'relaxing the policy to allow unsafe-eval or pre-compiling your ' +
-              'templates into render functions.'
-            );
-          }
-        }
-      }
-
       // check cache
-      var key = options.delimiters
-        ? String(options.delimiters) + template
-        : template;
+      var key = options.delimiters ? String(options.delimiters) + template : template;
       if (cache[key]) {
         return cache[key]
       }
 
       // compile
       var compiled = compile(template, options);
-
-      // check compilation errors/tips
-      {
-        if (compiled.errors && compiled.errors.length) {
-          if (options.outputSourceRange) {
-            compiled.errors.forEach(function (e) {
-              warn$1(
-                "Error compiling template:\n\n" + (e.msg) + "\n\n" +
-                generateCodeFrame(template, e.start, e.end),
-                vm
-              );
-            });
-          } else {
-            warn$1(
-              "Error compiling template:\n\n" + template + "\n\n" +
-              compiled.errors.map(function (e) { return ("- " + e); }).join('\n') + '\n',
-              vm
-            );
-          }
-        }
-        if (compiled.tips && compiled.tips.length) {
-          if (options.outputSourceRange) {
-            compiled.tips.forEach(function (e) { return tip(e.msg, vm); });
-          } else {
-            compiled.tips.forEach(function (msg) { return tip(msg, vm); });
-          }
-        }
-      }
 
       // turn code into functions
       var res = {};
@@ -11759,35 +11469,20 @@
         };
 
         if (options) {
-          if ( options.outputSourceRange) {
-            // $flow-disable-line
-            var leadingSpaceLength = template.match(/^\s*/)[0].length;
-
-            warn = function (msg, range, tip) {
-              var data = { msg: msg };
-              if (range) {
-                if (range.start != null) {
-                  data.start = range.start + leadingSpaceLength;
-                }
-                if (range.end != null) {
-                  data.end = range.end + leadingSpaceLength;
-                }
-              }
-              (tip ? tips : errors).push(data);
-            };
-          }
           // merge custom modules
           if (options.modules) {
             finalOptions.modules =
               (baseOptions.modules || []).concat(options.modules);
           }
           // merge custom directives
+          // 合并自定义指令
           if (options.directives) {
             finalOptions.directives = extend(
               Object.create(baseOptions.directives || null),
               options.directives
             );
           }
+
           // copy other options
           for (var key in options) {
             if (key !== 'modules' && key !== 'directives') {
@@ -11799,9 +11494,6 @@
         finalOptions.warn = warn;
 
         var compiled = baseCompile(template.trim(), finalOptions);
-        {
-          detectErrors(compiled.ast, warn);
-        }
         compiled.errors = errors;
         compiled.tips = tips;
         return compiled
@@ -11827,6 +11519,7 @@
     if (options.optimize !== false) {
       optimize(ast, options);
     }
+    // 生成AST语法树
     var code = generate(ast, options);
     return {
       ast: ast,
@@ -11868,48 +11561,29 @@
     hydrating
   ) {
     el = el && query(el);
-
-    /* istanbul ignore if */
-    if (el === document.body || el === document.documentElement) {
-       warn(
-        "Do not mount Vue to <html> or <body> - mount to normal elements instead."
-      );
-      return this
-    }
-
     var options = this.$options;
     // resolve template/el and convert to render function
+    // 解析模板/el并转换为渲染函数
+
+    // 如果没有render 方法
     if (!options.render) {
       var template = options.template;
+      // 如果 options api 中写了 template:`<div>hello</div>`
       if (template) {
         if (typeof template === 'string') {
           if (template.charAt(0) === '#') {
             template = idToTemplate(template);
-            /* istanbul ignore if */
-            if ( !template) {
-              warn(
-                ("Template element not found or is empty: " + (options.template)),
-                this
-              );
-            }
           }
         } else if (template.nodeType) {
           template = template.innerHTML;
         } else {
-          {
-            warn('invalid template option:' + template, this);
-          }
           return this
         }
       } else if (el) {
+        // 其他方式 先获取出el 元素，这个el 元素一般都是 div#app
         template = getOuterHTML(el);
       }
       if (template) {
-        /* istanbul ignore if */
-        if ( config.performance && mark) {
-          mark('compile');
-        }
-
         var ref = compileToFunctions(template, {
           outputSourceRange: "development" !== 'production',
           shouldDecodeNewlines: shouldDecodeNewlines,
@@ -11921,12 +11595,6 @@
         var staticRenderFns = ref.staticRenderFns;
         options.render = render;
         options.staticRenderFns = staticRenderFns;
-
-        /* istanbul ignore if */
-        if ( config.performance && mark) {
-          mark('compile end');
-          measure(("vue " + (this._name) + " compile"), 'compile', 'compile end');
-        }
       }
     }
     return mount.call(this, el, hydrating)
