@@ -933,9 +933,9 @@
     // this: Observer Instance
     def(value, '__ob__', this);
     // eslint-disable-next-line
-    // debugger;
+    // // debugger;
     if (Array.isArray(value)) {
-      // debugger;
+      // // debugger;
       // 数组处理
       if (hasProto) { // '__proto__' in {}
         // 修改数组原型
@@ -1075,6 +1075,7 @@
         if (Dep.target) {
           // 如果有 watch 触发watch
           dep.depend();
+          // 每一个来 defineReactive 的target 都闭包了 一个dep,里面记录了谁来这里用到了这个值。
           if (childOb) { // 如果是深层级，给 深层级的对象也触发 发布
             childOb.dep.depend();
             if (Array.isArray(value)) {
@@ -9176,12 +9177,17 @@
   /**
    * Not type-checking this file because it's mostly vendor code.
    */
+  // import { unicodeRegExp } from 'core/util/lang'
 
   // Regular Expressions for parsing tags and attributes
   var attribute = /^\s*([^\s"'<>\/=]+)(?:\s*(=)\s*(?:"([^"]*)"+|'([^']*)'+|([^\s"'=<>`]+)))?/;
-  // 空格 *
+  // 空格开头 任意个数
+  // ([^\s"'<>\/=]+)   分组匹配 空格 "
   var dynamicArgAttribute = /^\s*((?:v-[\w-]+:|@|:|#)\[[^=]+\][^\s"'<>\/=]*)(?:\s*(=)\s*(?:"([^"]*)"+|'([^']*)'+|([^\s"'=<>`]+)))?/;
-  var ncname = "[a-zA-Z_][\\-\\.0-9_a-zA-Z" + (unicodeRegExp.source) + "]*";
+  // 下面的带了Unicode 的的没法看
+  var ncname = '[a-zA-Z_][\\w\\-\\.]*';
+  // const ncname = `[a-zA-Z_][\\-\\.0-9_a-zA-Z${unicodeRegExp.source}]*`
+  // a-z A-Z -. 0-9_
   var qnameCapture = "((?:" + ncname + "\\:)?" + ncname + ")";
   var startTagOpen = new RegExp(("^<" + qnameCapture));
   var startTagClose = /^\s*(\/?)>/;
@@ -9224,12 +9230,15 @@
     var index = 0;
     var last, lastTag;
     while (html) {
+      // debugger;
       last = html;
       // Make sure we're not in a plaintext content element like script/style
+      // 确保我们不是在像script/style这样的纯文本内容元素中
       if (!lastTag || !isPlainTextElement(lastTag)) {
         var textEnd = html.indexOf('<');
         if (textEnd === 0) {
-          // Comment:
+          // 如果是 < 开头，则分析是什么情况
+          // Comment: 注释
           if (comment.test(html)) {
             var commentEnd = html.indexOf('-->');
 
@@ -9243,6 +9252,7 @@
           }
 
           // http://en.wikipedia.org/wiki/Conditional_comment#Downlevel-revealed_conditional_comment
+          // 条件注释判断浏览器<!--[if !IE]><!--[if IE]><!--[if lt IE 6]><!--[if gte IE 6]>
           if (conditionalComment.test(html)) {
             var conditionalEnd = html.indexOf(']>');
 
@@ -9360,6 +9370,7 @@
         advance(start[0].length);
         var end, attr;
         while (!(end = html.match(startTagClose)) && (attr = html.match(dynamicArgAttribute) || html.match(attribute))) {
+          // debugger;
           attr.start = index;
           advance(attr[0].length);
           attr.end = index;
@@ -11492,7 +11503,7 @@
         }
 
         finalOptions.warn = warn;
-
+        // debugger;
         var compiled = baseCompile(template.trim(), finalOptions);
         compiled.errors = errors;
         compiled.tips = tips;

@@ -9,14 +9,23 @@
 
 <body>
   <div id="app">
-    <p>123</p>
     <p>{{hello}}</p>
-    <p>count:{{count}}</p>
+    <div>---------------------</div>
+    <vue-cp1 />
   </div>
   <script src="../dist/vue.js"></script>
   <script>
+    const cp = Vue.component('vue-cp1', {
+      template: '<div>{{msg}}</div>',
+      data() {
+        return { msg: '1' };
+      }
+    });
     const vm = new Vue({
       el: '#app',
+      components: {
+        'vue-cp1': cp
+      },
       data() {
         return {
           hello: '123',

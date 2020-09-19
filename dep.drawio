@@ -1,0 +1,107 @@
+<mxfile host="4448a1cf-453a-49a9-a257-e1785723f1c7" modified="2020-09-19T12:39:12.159Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.49.0 Chrome/83.0.4103.122 Electron/9.2.1 Safari/537.36" etag="hUfhMClvHVbNN-wWhpcG" version="13.1.3">
+    <diagram id="6hGFLwfOUW9BJ-s0fimq" name="Page-1">
+        <mxGraphModel dx="1349" dy="430" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="2" value="defineReactive" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=top;comic=0;" vertex="1" parent="1">
+                    <mxGeometry x="510" y="245" width="170" height="110" as="geometry"/>
+                </mxCell>
+                <mxCell id="11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;comic=0;" edge="1" parent="1" source="3" target="9">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="12" value="取值的时候把当前的dep放到 watcher.dep里面" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="11">
+                    <mxGeometry x="-0.5439" y="2" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="37" value="" style="edgeStyle=orthogonalEdgeStyle;curved=1;comic=0;jumpStyle=arc;jumpSize=17;orthogonalLoop=1;jettySize=auto;html=1;shadow=0;strokeColor=#CCFFFF;fontSize=12;entryX=0;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="3" target="42">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="780" y="330" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="47" value="notify" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=12;" vertex="1" connectable="0" parent="37">
+                    <mxGeometry x="0.1077" y="1" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="3" value="dep" style="rounded=0;whiteSpace=wrap;html=1;comic=0;" vertex="1" parent="1">
+                    <mxGeometry x="560" y="315" width="95" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="14" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;comic=0;jumpStyle=gap;" edge="1" parent="1" source="5" target="9">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="15" value="Dep.target = watcher = 组件包装对象" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="14">
+                    <mxGeometry x="-0.2422" y="1" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="5" value="watcher" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=top;shadow=0;comic=0;" vertex="1" parent="1">
+                    <mxGeometry x="80" y="245" width="170" height="110" as="geometry"/>
+                </mxCell>
+                <mxCell id="16" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="6" target="3">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="17" value="取值" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="16">
+                    <mxGeometry x="-0.0808" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="6" value="vm" style="rounded=0;whiteSpace=wrap;html=1;shadow=0;comic=0;" vertex="1" parent="1">
+                    <mxGeometry x="117.5" y="315" width="95" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="9" value="Dep.target" style="ellipse;whiteSpace=wrap;html=1;shadow=0;" vertex="1" parent="1">
+                    <mxGeometry x="105" y="505" width="120" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="18" value="data(){&lt;br&gt;return {a:1}&lt;br&gt;}" style="rounded=0;whiteSpace=wrap;html=1;shadow=0;align=left;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+                    <mxGeometry x="-300" y="270" width="70" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="19" value="initData" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;shadow=0;fontSize=23;" vertex="1" parent="1">
+                    <mxGeometry x="-330" y="135" width="140" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="23" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;entryX=0;entryY=0.5;entryDx=0;entryDy=0;comic=0;" edge="1" parent="1" source="18" target="5">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="-195" y="415" as="sourcePoint"/>
+                        <mxPoint x="-20" y="300" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="24" value="&lt;span&gt;getData&lt;/span&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=12;" vertex="1" connectable="0" parent="23">
+                    <mxGeometry x="-0.248" y="31" relative="1" as="geometry">
+                        <mxPoint x="23.14" y="15.97" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="26" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.25;entryY=1;entryDx=0;entryDy=0;fontSize=12;strokeColor=#CCFFFF;shadow=0;comic=0;jumpStyle=arc;jumpSize=17;" edge="1" parent="1" source="25" target="2">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="27" value="在setData的时候，Dep 触发&amp;nbsp;&lt;span style=&quot;color: rgb(220 , 220 , 170) ; background-color: rgb(30 , 30 , 30) ; font-family: &amp;#34;consolas&amp;#34; , &amp;#34;courier new&amp;#34; , monospace ; font-size: 14px&quot;&gt;notify&lt;/span&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=12;" vertex="1" connectable="0" parent="26">
+                    <mxGeometry x="-0.6327" y="-2" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="25" value="setData" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;shadow=0;fontSize=12;" vertex="1" parent="1">
+                    <mxGeometry x="-300" y="440" width="60" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="29" value="Text" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;fontSize=12;" vertex="1" parent="1">
+                    <mxGeometry x="-124" y="442" width="40" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="32" value="Dep.target" style="ellipse;whiteSpace=wrap;html=1;shadow=0;" vertex="1" parent="1">
+                    <mxGeometry x="115" y="515" width="120" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="42" value="deps" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=none;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;shadow=0;comic=0;fontSize=12;align=center;" vertex="1" parent="1">
+                    <mxGeometry x="860" y="340" width="140" height="104" as="geometry">
+                        <mxRectangle x="840" y="397" width="90" height="26" as="alternateBounds"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="43" value="sub1 - watcher.update" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="42">
+                    <mxGeometry y="26" width="140" height="26" as="geometry"/>
+                </mxCell>
+                <mxCell id="44" value="sub2 - watcher.update" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="42">
+                    <mxGeometry y="52" width="140" height="26" as="geometry"/>
+                </mxCell>
+                <mxCell id="45" value="sub3 - watcher.update" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="42">
+                    <mxGeometry y="78" width="140" height="26" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

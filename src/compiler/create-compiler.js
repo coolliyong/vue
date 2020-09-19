@@ -42,7 +42,7 @@ export function createCompilerCreator (baseCompile: Function): Function {
       }
 
       finalOptions.warn = warn
-
+      // debugger;
       const compiled = baseCompile(template.trim(), finalOptions)
       compiled.errors = errors
       compiled.tips = tips

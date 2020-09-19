@@ -52,9 +52,9 @@ export class Observer {
     // this: Observer Instance
     def(value, '__ob__', this);
     // eslint-disable-next-line
-    // debugger;
+    // // debugger;
     if (Array.isArray(value)) {
-      // debugger;
+      // // debugger;
       // 数组处理
       if (hasProto) { // '__proto__' in {}
         // 修改数组原型
@@ -194,7 +194,8 @@ export function defineReactive (
       const value = getter ? getter.call(obj) : val
       if (Dep.target) {
         // 如果有 watch 触发watch
-        dep.depend()
+        dep.depend();
+        // 每一个来 defineReactive 的target 都闭包了 一个dep,里面记录了谁来这里用到了这个值。
         if (childOb) { // 如果是深层级，给 深层级的对象也触发 发布
           childOb.dep.depend()
           if (Array.isArray(value)) {

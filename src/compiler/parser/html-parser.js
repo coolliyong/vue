@@ -11,14 +11,16 @@
 
 import { makeMap, no } from 'shared/util'
 import { isNonPhrasingTag } from 'web/compiler/util'
-import { unicodeRegExp } from 'core/util/lang'
+// import { unicodeRegExp } from 'core/util/lang'
 
 // Regular Expressions for parsing tags and attributes
 const attribute = /^\s*([^\s"'<>\/=]+)(?:\s*(=)\s*(?:"([^"]*)"+|'([^']*)'+|([^\s"'=<>`]+)))?/
 // 空格开头 任意个数
 // ([^\s"'<>\/=]+)   分组匹配 空格 "
 const dynamicArgAttribute = /^\s*((?:v-[\w-]+:|@|:|#)\[[^=]+\][^\s"'<>\/=]*)(?:\s*(=)\s*(?:"([^"]*)"+|'([^']*)'+|([^\s"'=<>`]+)))?/
-const ncname = `[a-zA-Z_][\\-\\.0-9_a-zA-Z${unicodeRegExp.source}]*`
+// 下面的带了Unicode 的的没法看
+const ncname = '[a-zA-Z_][\\w\\-\\.]*'
+// const ncname = `[a-zA-Z_][\\-\\.0-9_a-zA-Z${unicodeRegExp.source}]*`
 // a-z A-Z -. 0-9_
 const qnameCapture = `((?:${ncname}\\:)?${ncname})`
 const startTagOpen = new RegExp(`^<${qnameCapture}`)
@@ -62,12 +64,15 @@ export function parseHTML (html, options) {
   let index = 0
   let last, lastTag
   while (html) {
+    // debugger;
     last = html
     // Make sure we're not in a plaintext content element like script/style
+    // 确保我们不是在像script/style这样的纯文本内容元素中
     if (!lastTag || !isPlainTextElement(lastTag)) {
       let textEnd = html.indexOf('<')
       if (textEnd === 0) {
-        // Comment:
+        // 如果是 < 开头，则分析是什么情况
+        // Comment: 注释
         if (comment.test(html)) {
           const commentEnd = html.indexOf('-->')
 
@@ -81,6 +86,7 @@ export function parseHTML (html, options) {
         }
 
         // http://en.wikipedia.org/wiki/Conditional_comment#Downlevel-revealed_conditional_comment
+        // 条件注释判断浏览器<!--[if !IE]><!--[if IE]><!--[if lt IE 6]><!--[if gte IE 6]>
         if (conditionalComment.test(html)) {
           const conditionalEnd = html.indexOf(']>')
 
@@ -198,6 +204,7 @@ export function parseHTML (html, options) {
       advance(start[0].length)
       let end, attr
       while (!(end = html.match(startTagClose)) && (attr = html.match(dynamicArgAttribute) || html.match(attribute))) {
+        // debugger;
         attr.start = index
         advance(attr[0].length)
         attr.end = index

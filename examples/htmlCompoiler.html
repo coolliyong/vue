@@ -1,41 +1,110 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
 </head>
+
 <body>
+  <div id="app">
+    <div class="loading" v-loading="loading">
+      <p>加载中</p>
+    </div>
+  </div>
+  <script src="../dist/vue.js"></script>
+  <script>
 
+    const vm = new Vue({
+      el: '#app',
+      data() {
+        return {
+          aa: 11,
+          loading: false,
+        }
+      },
+      mounted() {
+        this.loading = true;
+      },
+      directives: {
+        loading: {
+          update(el, binding, vnode, oldVnode) {
+            if (binding.value === binding.oldValue) return;
+            // el.classList.add('loading-show');
+            // console.log(el, binding, vnode, oldVnode);
+            if (binding.value) {
+              el.style.position = 'fixed';
+              el.style.top = '0';
+              el.style.bottom = '0';
+              el.style.left = '0';
+              el.style.right = '0';
+              el.style.background = 'rgba(0,0,0,.2)';
+              el.style.flexDirection = 'row';
+              el.style.justifyContent = 'center';
+              el.style.alignItems = 'center';
+              el.style.display = 'flex';
+            } else {
+              el.style.display = 'none';
+            }
+          },
+
+        }
+      }
+    });
+
+
+    // Regular Expressions for parsing tags and attributes
+    const attribute = /^\s*([^\s"'<>\/=]+)(?:\s*(=)\s*(?:"([^"]*)"+|'([^']*)'+|([^\s"'=<>`]+)))?/
+    const ncname = '[a-zA-Z_][\\w\\-\\.]*'
+    const qnameCapture = `((?:${ncname}\\:)?${ncname})`
+    const startTagOpen = new RegExp(`^<${qnameCapture}`)
+    const startTagClose = /^\s*(\/?)>/
+    const endTag = new RegExp(`^<\\/${qnameCapture}[^>]*>`)
+    const doctype = /^<!DOCTYPE [^>]+>/i
+    const comment = /^<!\--/
+    const conditionalComment = /^<!\[/
+
+    let html = `
+      <div>
+        <p>hello</p>
+        <span>hello papapa</span>
+      </div>
+    `;
+    let index = 0;
+
+    function parseHTML() {
+      while (html) {
+        let textEnd = html.indexOf('<');
+        if (textEnd === 0) {
+
+          // End tag:
+          const endTagMatch = html.match(endTag)
+          if (endTagMatch) {
+            const curIndex = index
+            advance(endTagMatch[0].length)
+            parseEndTag(endTagMatch[1], curIndex, index)
+            continue
+          }
+
+          // Start tag:
+          const startTagMatch = parseStartTag()
+          if (startTagMatch) {
+            handleStartTag(startTagMatch)
+            if (shouldIgnoreFirstNewline(startTagMatch.tagName, html)) {
+              advance(1)
+            }
+            continue
+          }
+        }
+
+      }
+    }
+    function advance(n) {
+      index += n
+      html = html.substring(n)
+    }
+  </script>
 </body>
+
 </html>
-
-
-
-
-奖励排行
-酒店积分
-
-
-100088
-
-
-"66","77","DUQH","FBB01","FBB02","JITUAN4","LC0101","LCJQJ","LCKF","LCLFY","LCLHZ","LCLTF","LCQT","LCWJ","LCZXD"
-
-"staff_cd": "FBB02",
-
-{
-  "id": 866,
-  "device_id": "5CE90795-17F1-4446-BDB3-C6C7560EFF9F",
-  "device_token": "9a58ce9e04719be589bef7dcbb57ab2f490c6bafc62e7d2a1a8da7ff485ebb35",
-  "device_type": "ios",
-  "staff_id": "8211",
-  "staff_cd": "FBB02",
-  "hotel_id": "",
-  "group_id": "999999999",
-  "app_key": "pmsone",
-  "_timestamp": "2020-09-17T09:08:17.000Z"
-}
-
-
-
